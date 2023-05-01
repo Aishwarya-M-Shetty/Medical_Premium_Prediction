@@ -6,6 +6,7 @@ from insurance_predictor.exception import InsuranceException
 from insurance_predictor.config import mongo_client
 from insurance_predictor.logger import logging
 
+
 def get_collection_as_dataframe(database_name:str,collection_name:str)->pd.DataFrame:
     try:
         logging.info(f"reading data from db: {database_name} and collection name {collection_name}")
