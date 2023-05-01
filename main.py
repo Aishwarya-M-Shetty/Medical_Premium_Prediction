@@ -1,7 +1,7 @@
 from insurance_predictor.logger import logging
 from insurance_predictor.exception import InsuranceException
 import os,sys
-
+from insurance_predictor.utils import get_collection_as_dataframe
 
 def test_logger_and_exception():
     try:
@@ -17,7 +17,8 @@ def test_logger_and_exception():
 
 if __name__=="__main__":
     try:
-        test_logger_and_exception()
+        #test_logger_and_exception()
+        get_collection_as_dataframe(database_name="INSURANCE",collection_name="INSURANCE_PROJECT")
     except Exception as e:
         print(e)
 
