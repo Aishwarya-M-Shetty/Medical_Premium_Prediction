@@ -1,5 +1,6 @@
-from dataclasses import dataclas
+from dataclasses import dataclass
 
+@dataclass
 class DataIngestionArtifact:
     feature_store_file_path:str
     train_file_path:str

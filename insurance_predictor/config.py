@@ -4,8 +4,9 @@ import pandas as pd
 import os,sys
 import json
 import numpy as np
+from dataclasses import dataclass
 
-
+@dataclass
 class EnvironmentVariable:
     mongo_db_url=os.getenv("MONGO_DB_URL")
     

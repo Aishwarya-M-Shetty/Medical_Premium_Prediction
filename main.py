@@ -4,6 +4,7 @@ import os,sys
 from insurance_predictor.utils import get_collection_as_dataframe
 from insurance_predictor.entity.config_entity import DataIngestionConfig
 from insurance_predictor.entity import config_entity
+from insurance_predictor.components.data_ingestion import data_ingestion
 
 def test_logger_and_exception():
     try:
@@ -25,6 +26,8 @@ if __name__=="__main__":
         training_pipeline_config=config_entity.TrainingPipelineConfig()
         data_ingestion_config=config_entity.DataIngestionConfig(training_pipeline_config=training_pipeline_config)
         print(data_ingestion_config.to_dict())
+        data_ingestion=data_ingestion(data_ingestion_config=data_ingestion_config)
+        data_ingestion_artifact=data_ingestion.initiate_data_ingestion()
     except Exception as e:
         print(e)
 
