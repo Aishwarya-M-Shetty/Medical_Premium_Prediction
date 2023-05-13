@@ -5,7 +5,7 @@ from insurance_predictor.utils import get_collection_as_dataframe
 from insurance_predictor.entity.config_entity import DataIngestionConfig
 from insurance_predictor.entity import config_entity
 from insurance_predictor.components.data_ingestion import data_ingestion
-
+from insurance_predictor.components.data_validation import Data_Validation
 def test_logger_and_exception():
     try:
         logging.info("starting the test_logger_and_exception function")
@@ -24,10 +24,22 @@ if __name__=="__main__":
         #get_collection_as_dataframe(database_name="INSURANCE",collection_name="INSURANCE_PROJECT")
         print("inside main")
         training_pipeline_config=config_entity.TrainingPipelineConfig()
+
+        # data ingestion
         data_ingestion_config=config_entity.DataIngestionConfig(training_pipeline_config=training_pipeline_config)
         print(data_ingestion_config.to_dict())
         data_ingestion=data_ingestion(data_ingestion_config=data_ingestion_config)
         data_ingestion_artifact=data_ingestion.initiate_data_ingestion()
+
+
+        # Data Validation
+        data_validation_config = config_entity.DataValidationConfig(training_pipeline_config=training_pipeline_config)
+        data_validation = Data_Validation(data_validation_config=data_validation_config,
+                         data_ingestion_artifact=data_ingestion_artifact)
+        
+        data_validation_artifact = data_validation.initiate_data_validation()
+
+        
     except Exception as e:
         print(e)
 

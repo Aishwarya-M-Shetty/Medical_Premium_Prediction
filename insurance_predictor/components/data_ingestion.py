@@ -51,7 +51,7 @@ class data_ingestion:
             test_file_path=self.data_ingestion_config.test_file_path
             )
 
-        
+            return data_ingestion_artifact
         except Exception as e:
             raise InsuranceException(e,sys)
         

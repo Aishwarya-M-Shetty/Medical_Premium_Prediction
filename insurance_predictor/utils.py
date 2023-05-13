@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+import yaml
 import os,sys
 from insurance_predictor.exception import InsuranceException
 from insurance_predictor.config import mongo_client
@@ -20,3 +20,22 @@ def get_collection_as_dataframe(database_name:str,collection_name:str)->pd.DataF
     
     except Exception as e:
         raise InsuranceException(e,sys)
+
+def convert_columns_float(df:pd.DataFrame,exclude_columns:list)->pd.DataFrame:
+    try:
+        for column in df.columns:
+            if column not in exclude_columns:
+                if df[column].dtypes != 'O':
+                    df[column]=df[column].astype('float')
+        return df
+    except Exception as e:
+        raise e
+    
+def write_yaml_file(file_path,data:dict):
+    try:
+        file_dir = os.path.dirname(file_path)
+        os.makedirs(file_dir,exist_ok=True)
+        with open(file_path,"w") as file_writer:
+            yaml.dump(data,file_writer)
+    except Exception as e:
+        raise InsuranceException(e, sys)
