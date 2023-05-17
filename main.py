@@ -6,6 +6,7 @@ from insurance_predictor.entity.config_entity import DataIngestionConfig
 from insurance_predictor.entity import config_entity
 from insurance_predictor.components.data_ingestion import data_ingestion
 from insurance_predictor.components.data_validation import Data_Validation
+from insurance_predictor.components.data_transformation import DataTransformation
 def test_logger_and_exception():
     try:
         logging.info("starting the test_logger_and_exception function")
@@ -39,7 +40,11 @@ if __name__=="__main__":
         
         data_validation_artifact = data_validation.initiate_data_validation()
 
-        
+        data_transformation_config = config_entity.DataTransformationConfig(training_pipeline_config=training_pipeline_config)
+        data_transformation = DataTransformation(data_transformation_config=data_transformation_config, 
+        data_ingestion_artifact=data_ingestion_artifact)
+        data_transformation_artifact = data_transformation.initiate_data_transformation()
+
     except Exception as e:
         print(e)
 
