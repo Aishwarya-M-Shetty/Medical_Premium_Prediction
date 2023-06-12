@@ -1,9 +1,8 @@
 from insurance_predictor.logger import logging
 from insurance_predictor.exception import InsuranceException
-import os,sys
 from insurance_predictor.utils import get_collection_as_dataframe
-from insurance_predictor.entity.config_entity import DataIngestionConfig
-from insurance_predictor.entity import config_entity,artifact_entity
+import sys,os
+from insurance_predictor.entity import config_entity
 from insurance_predictor.components.data_ingestion import Data_ingestion
 from insurance_predictor.components.data_validation import Data_Validation
 from insurance_predictor.components.data_transformation import DataTransformation
@@ -11,45 +10,31 @@ from insurance_predictor.components.model_trainer import ModelTrainer
 from insurance_predictor.components.model_evaluation import ModelEvaluation
 from insurance_predictor.components.model_pusher import ModelPusher
 
-def test_logger_and_exception():
-    try:
-        logging.info("starting the test_logger_and_exception function")
-        result=3/0
-        print(result)
-        logging.info("ending the test_logger_and_exception function")
-        
-    except Exception as e:
-        logging.debug(str(e))
-        raise InsuranceException(e,sys)
-    
 
-if __name__=="__main__":
+def start_training_pipeline():
     try:
-        #test_logger_and_exception()
-        #get_collection_as_dataframe(database_name="INSURANCE",collection_name="INSURANCE_PROJECT")
-        print("inside main")
-        training_pipeline_config=config_entity.TrainingPipelineConfig()
+        training_pipeline_config = config_entity.TrainingPipelineConfig()
 
-        # data ingestion
-        data_ingestion_config=config_entity.DataIngestionConfig(training_pipeline_config=training_pipeline_config)
+        #data ingestion
+        data_ingestion_config  = config_entity.DataIngestionConfig(training_pipeline_config=training_pipeline_config)
         print(data_ingestion_config.to_dict())
         data_ingestion=Data_ingestion(data_ingestion_config=data_ingestion_config)
         data_ingestion_artifact=data_ingestion.initiate_data_ingestion()
-
-
-        # Data Validation
+        
+        #data validation
         data_validation_config = config_entity.DataValidationConfig(training_pipeline_config=training_pipeline_config)
         data_validation = Data_Validation(data_validation_config=data_validation_config,
-                         data_ingestion_artifact=data_ingestion_artifact)
-        
+                        data_ingestion_artifact=data_ingestion_artifact)
+
         data_validation_artifact = data_validation.initiate_data_validation()
 
+        #data transformation
         data_transformation_config = config_entity.DataTransformationConfig(training_pipeline_config=training_pipeline_config)
         data_transformation = DataTransformation(data_transformation_config=data_transformation_config, 
         data_ingestion_artifact=data_ingestion_artifact)
         data_transformation_artifact = data_transformation.initiate_data_transformation()
-
-          #model trainer
+        
+        #model trainer
         model_trainer_config = config_entity.ModelTrainerConfig(training_pipeline_config=training_pipeline_config)
         model_trainer = ModelTrainer(model_trainer_config=model_trainer_config, data_transformation_artifact=data_transformation_artifact)
         model_trainer_artifact = model_trainer.initiate_model_trainer()
@@ -62,14 +47,11 @@ if __name__=="__main__":
         model_trainer_artifact=model_trainer_artifact)
         model_eval_artifact = model_eval.initiate_model_evaluation()
 
-        # model pusher
-        model_pusher_config = config_entity.ModelPusherConfig(training_pipeline_config=training_pipeline_config)
-        model_pusher = ModelPusher(model_pusher_config=model_pusher_config,
-                                     data_transformation_artifact=data_transformation_artifact,
-                                     model_trainer_artifact=model_trainer_artifact)
+        #model pusher
+        model_pusher_config = config_entity.ModelPusherConfig(training_pipeline_config)
+        model_pusher = ModelPusher(model_pusher_config=model_pusher_config, 
+                data_transformation_artifact=data_transformation_artifact,
+                model_trainer_artifact=model_trainer_artifact)
         model_pusher_artifact = model_pusher.initiate_model_pusher()
-
-
     except Exception as e:
-        print(e)
-
+        raise InsuranceException(e, sys)

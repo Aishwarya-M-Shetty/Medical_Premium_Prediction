@@ -8,7 +8,7 @@ from  insurance_predictor import utils
 from insurance_predictor.logger import logging
 from sklearn.model_selection import train_test_split
 
-class data_ingestion: 
+class Data_ingestion: 
     def __init__(self,data_ingestion_config:config_entity.DataIngestionConfig):
         try:
             self.data_ingestion_config=data_ingestion_config

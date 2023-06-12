@@ -30,7 +30,6 @@ def start_batch_prediction(input_file_path):
         target_encoder = load_object(file_path=model_resolver.get_latest_target_encoder_path())
 
 
-        """We need to create label encoder object for each categorical variable. We will check later"""
         input_feature_names = list(transformer.feature_names_in_)
         for i in input_feature_names:       
             if df[i].dtypes =='object':
@@ -43,11 +42,7 @@ def start_batch_prediction(input_file_path):
         prediction = model.predict(input_arr)
         
 
-        # cat_prediction = target_encoder.inverse_transform(prediction)
-
         df["prediction"]=prediction
-        # df["cat_pred"]=cat_prediction
-
 
         prediction_file_name = os.path.basename(input_file_path).replace(".csv",f"{datetime.now().strftime('%m%d%Y__%H%M%S')}.csv")
         prediction_file_path = os.path.join(PREDICTION_DIR,prediction_file_name)
